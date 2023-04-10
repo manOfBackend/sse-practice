@@ -1,4 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Sse } from '@nestjs/common';
+import { interval, map, Observable } from 'rxjs';
 import { AppService } from './app.service';
 
 @Controller()
@@ -8,5 +9,12 @@ export class AppController {
   @Get()
   getHello(): string {
     return this.appService.getHello();
+  }
+
+  @Sse('sse')
+  sse(): Observable<MessageEvent> {
+    return interval(1000).pipe(
+      map((_) => ({ data: { hello: 'world' } } as MessageEvent)),
+    );
   }
 }
